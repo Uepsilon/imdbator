@@ -29,7 +29,7 @@ folder = ""
 def collec_movies_from_folder():
     movies = {'folders': [], 'files': []}
 
-    movie_extensions = ('.mkv', '.avi')
+    movie_extensions = ('.mkv', '.avi', 'mp4')
 
     for dir_entry in os.listdir(folder):
         if os.path.isdir(os.path.join(folder, dir_entry)):
