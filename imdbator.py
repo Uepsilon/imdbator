@@ -3,7 +3,7 @@
 """IMDBator
 
 Usage:
-    imdbator.py <folder> [-adf]
+    imdbator.py <folder> [-adft]
     imdbator.py --version
 
 Options:
@@ -11,6 +11,7 @@ Options:
     -a --auto           Does not ask which title should be used, takes first
     -f --skip-files     Skips Files
     -d --skip-folders   Skips Folders
+    -t --test           Does not rename, just Search and Prompt
     -h --help           Show this screen.
     --version           Show version.
 
@@ -59,7 +60,7 @@ def rename_files(movies):
     for movie in movies:
         i += 1
         search_result = search_by_title(movie['title'])
-        print "Handling Movie " + str(i) + "/" + str(len(movies))
+        print "\nHandling Movie " + str(i) + "/" + str(len(movies))
 
         j = 0
         for result in search_result:
@@ -77,15 +78,17 @@ def rename_files(movies):
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
-                    os.rename(folder + "/" + movie['filename'], folder + "/" + new_file_name)
+                    if not passed_args['--test']:
+                        os.rename(folder + "/" + movie['filename'], folder + "/" + new_file_name)
                     break
                 elif decision.lower() == 's':
                     # Skip Movie
-                    print "Skipped\n"
+                    print "Skipped"
                     break
             else:
-                print "Renaming '" + movie['filename'] + "' to '" + new_file_name + "'"
-                os.rename(folder + "/" + movie['filename'], folder + "/" + new_file_name)
+                print "Renaming '" + movie['filename'].decode('utf-8') + "' to '" + new_file_name + "'"
+                if not passed_args['--test']:
+                    os.rename(folder + "/" + movie['filename'], folder + "/" + new_file_name)
                 break
 
 
@@ -96,7 +99,7 @@ def rename_folders(folders):
     for movie_folder in folders:
         i += 1
 
-        print "\n Handling Folder " + str(i) + "/" + str(len(folders))
+        print "\nHandling Folder " + str(i) + "/" + str(len(folders))
 
         search_result = search_by_title(movie_folder)
 
@@ -117,15 +120,17 @@ def rename_folders(folders):
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
-                    os.rename(os.path.join(folder, movie_folder), os.path.join(folder, new_folder_name))
+                    if not passed_args['--test']:
+                        os.rename(os.path.join(folder, movie_folder), os.path.join(folder, new_folder_name))
                     break
                 elif decision.lower() == 's':
                     # Skip Movie
                     print "Skipped"
                     break
             else:
-                print "Renaming '" + movie_folder + "' to '" + new_folder_name + "'"
-                os.rename(os.path.join(folder, movie_folder), os.path.join(folder, new_folder_name))
+                print "Renaming '" + movie_folder.decode('utf-8') + "' to '" + new_folder_name + "'"
+                if not passed_args['--test']:
+                    os.rename(os.path.join(folder, movie_folder), os.path.join(folder, new_folder_name))
                 break
 
 
