@@ -19,6 +19,7 @@ Options:
 
 import os
 import sys
+from itertools import count
 from docopt import docopt
 from imdb import IMDb
 
@@ -58,12 +59,12 @@ def rename_files(movies):
 
     print "Found {} Movies.".format(len(movies))
 
-    for movie, i in zip(movies, range(len(movies))):
+    for movie, i in zip(movies, count(1)):
         search_result = search_by_title(movie['title'])
-        print "\nHandling Movie {}/{}".format(i + 1, len(movies) + 1)
+        print "\nHandling Movie {}/{}".format(i, len(movies) + 1)
 
-        for result, j in zip(search_result, len(search_result)):
-            print "Result {}/{}".format(j + 1, len(search_result) + 1)
+        for result, j in zip(search_result, count(1)):
+            print "Result {}/{}".format(j, len(search_result) + 1)
 
             try:
                 new_file_name = movie_file_format.format(title=result['title'],
@@ -98,15 +99,15 @@ def rename_folders(folders):
     movie_folder_format = "{title} ({year})"
     print "Found {} Folders".format(len(folders))
 
-    for movie_folder, i in zip(folders, range(len(folders))):
+    for movie_folder, i in zip(folders, count(1)):
 
-        print "\nHandling Folder " + str(i) + "/" + str(len(folders))
+        print "\nHandling Folder {}/{}".format(i, len(folders) + 1)
 
         search_result = search_by_title(movie_folder)
 
-        for result, j in zip(search_result, range(1, len(search_result))):
+        for result, j in zip(search_result, count(1)):
 
-            print "Result {}/{}".format(i + 1, len(search_result) + 1)
+            print "Result {}/{}".format(i, len(search_result) + 1)
 
             try:
                 new_folder_name = movie_folder_format.format(title=result['title'],
