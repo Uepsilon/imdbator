@@ -53,11 +53,24 @@ def search_by_title(title):
 
 
 def rename_files(movies):
-    for movie in movies:
-        search_result = search_by_title(movie['title'])
+    print "Found " + str(len(movies)) + " Movies."
 
+    i = 0
+    for movie in movies:
+        i += 1
+        search_result = search_by_title(movie['title'])
+        print "Handling Movie " + str(i) + "/" + str(len(movies))
+
+        j = 0
         for result in search_result:
-            new_file_name = result['title'] + " ("+ str(result['year']) + ")." + movie['extension']
+            j += 1
+            print "Result " + str(j) + "/" + str(len(search_result))
+
+            try:
+                new_file_name = result['title'] + " ("+ str(result['year']) + ")." + movie['extension']
+            except KeyError:
+                print "Error caught in: " + str(result)
+                raise
 
             if not passed_args['--auto']:
                 print "Rename '" +  movie['title'] + "' to '" + new_file_name + "'?"
@@ -77,11 +90,27 @@ def rename_files(movies):
 
 
 def rename_folders(folders):
+    print "Found " + str(len(folders)) + " Folders"
+
+    i = 0
     for movie_folder in folders:
+        i += 1
+
+        print "Handling Folder " + str(i) + "/" + str(len(folders))
+
         search_result = search_by_title(movie_folder)
 
+        j = 0
         for result in search_result:
-            new_folder_name = result['title'] + " (" + str(result['year']) + ")"
+            j += 1
+
+            print "Result " + str(j) + "/" + str(len(search_result))
+
+            try:
+                new_folder_name = result['title'] + " (" + str(result['year']) + ")"
+            except KeyError:
+                print "Error caught in: " + str(result)
+                raise
 
             if not passed_args['--auto']:
                 print "Rename '" +  movie_folder + "' to '" + new_folder_name + "'?"
