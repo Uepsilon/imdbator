@@ -60,11 +60,7 @@ def rename_files(movies):
 
     for movie, i in zip(movies, range(len(movies))):
         search_result = search_by_title(movie['title'])
-<<<<<<< HEAD
-        print "Handling Movie {}/{}".format(i + 1, len(movies) + 1)
-=======
-        print "\nHandling Movie " + str(i) + "/" + str(len(movies))
->>>>>>> 5c475fcebf436981ba4f6cf7bcd9692ad96820f0
+        print "\nHandling Movie {}/{}".format(i + 1, len(movies) + 1)
 
         for result, j in zip(search_result, len(search_result)):
             print "Result {}/{}".format(j + 1, len(search_result) + 1)
