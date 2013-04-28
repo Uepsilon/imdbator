@@ -67,13 +67,13 @@ def rename_files(movies):
             print "Result " + str(j) + "/" + str(len(search_result))
 
             try:
-                new_file_name = result['title'] + " ("+ str(result['year']) + ")." + movie['extension']
+                new_file_name = result['title'] + " (" + str(result['year']) + ")." + movie['extension']
             except KeyError:
                 print "Error caught in: " + str(result)
                 raise
 
             if not passed_args['--auto']:
-                print "Rename '" +  movie['filename'].decode('utf-8') + "' to '" + new_file_name + "'?"
+                print "Rename '" + movie['filename'].decode('utf-8') + "' to '" + new_file_name + "'?"
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
@@ -113,7 +113,7 @@ def rename_folders(folders):
                 raise
 
             if not passed_args['--auto']:
-                print "Rename '" +  movie_folder.decode('utf-8') + "' to '" + new_folder_name + "'?"
+                print "Rename '" + movie_folder.decode('utf-8') + "' to '" + new_folder_name + "'?"
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
