@@ -73,7 +73,7 @@ def rename_files(movies):
                 raise
 
             if not passed_args['--auto']:
-                print "Rename '" +  movie['title'] + "' to '" + new_file_name + "'?"
+                print "Rename '" +  movie['filename'] + "' to '" + new_file_name + "'?"
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
