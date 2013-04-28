@@ -32,7 +32,7 @@ def collec_movies_from_folder():
 
     for dir_entry in os.listdir(folder):
         if os.path.isdir(os.path.join(folder, dir_entry)):
-            movies['folders'].append(dir_entry.decode('utf-8'))
+            movies['folders'].append(dir_entry)
             # Directory
         elif dir_entry.endswith(movie_extensions):
             # File
@@ -73,7 +73,7 @@ def rename_files(movies):
                 raise
 
             if not passed_args['--auto']:
-                print "Rename '" +  movie['filename'] + "' to '" + new_file_name + "'?"
+                print "Rename '" +  movie['filename'].decode('utf-8') + "' to '" + new_file_name + "'?"
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
@@ -113,7 +113,7 @@ def rename_folders(folders):
                 raise
 
             if not passed_args['--auto']:
-                print "Rename '" +  movie_folder + "' to '" + new_folder_name + "'?"
+                print "Rename '" +  movie_folder.decode('utf-8') + "' to '" + new_folder_name + "'?"
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
