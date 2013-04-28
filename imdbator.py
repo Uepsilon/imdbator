@@ -96,7 +96,7 @@ def rename_folders(folders):
     for movie_folder in folders:
         i += 1
 
-        print "Handling Folder " + str(i) + "/" + str(len(folders))
+        print "\n Handling Folder " + str(i) + "/" + str(len(folders))
 
         search_result = search_by_title(movie_folder)
 
@@ -121,7 +121,7 @@ def rename_folders(folders):
                     break
                 elif decision.lower() == 's':
                     # Skip Movie
-                    print "Skipped\n"
+                    print "Skipped"
                     break
             else:
                 print "Renaming '" + movie_folder + "' to '" + new_folder_name + "'"
