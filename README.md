@@ -16,10 +16,11 @@ Just download this, satisfy the Dependencies then run from the git-folder:
 
 ## Options
 
-* -t      Testrun (Just shows what it would do without renaming)
-* -f      No Files
-* -d      No Folders
 * -a      Automatic (Skipps Files / Folders which names already match top Searchresult)
+* -c      Uses the Canonical Title (Lion King, The (1994)) instead of normal Title (The Lion King (1994)) 
+* -d      No Folders
+* -f      No Files
+* -t      Testrun (Just shows what it would do without renaming)
 
 
 ## Dependencies

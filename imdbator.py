@@ -3,7 +3,7 @@
 """IMDBator
 
 Usage:
-    imdbator.py <folder> [-adft]
+    imdbator.py <folder> [-acdft]
     imdbator.py --version
 
 Options:
@@ -12,6 +12,7 @@ Options:
     -f --skip-files     Skips Files
     -d --skip-folders   Skips Folders
     -t --test           Does not rename, just Search and Prompt
+    -c --canonical      Uses the Canonical Title (Lion King, The (1994))
     -h --help           Show this screen.
     --version           Show version.
 
@@ -55,16 +56,19 @@ def search_by_title(title):
 
 
 def get_title_from_result(result):
-    # replcae / in moviename
-    title = re.sub('\/', '-', result['title'].encode('utf-8'))
+    # replace / in moviename
+    if passed_args['--canonical']:
+        return re.sub('\/', '-', result['long imdb canonical title'].encode('utf-8'))
+    else:
+        title = re.sub('\/', '-', result['title'].encode('utf-8'))
 
-    try:
-        return "{} ({})".format(
-            title,
-            result['year'])
-    except KeyError:
-        # print "Error caught in: {}".format(result)
-        return "{}".format(title)
+        try:
+            return "{} ({})".format(
+                title,
+                result['year'])
+        except KeyError:
+            # print "Error caught in: {}".format(result)
+            return "{}".format(title)
 
 
 def get_new_title(title, current_title):
