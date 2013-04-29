@@ -54,83 +54,87 @@ def search_by_title(title):
 
 
 def rename_files(movies):
-    print "Found " + str(len(movies)) + " Movies."
+    movie_file_format = "{title} ({year}).{ext}"
 
-    i = 0
-    for movie in movies:
-        i += 1
+    print "Found {} Movies.".format(len(movies))
+
+    for i, movie in enumerate(movies, 1):
         search_result = search_by_title(movie['title'])
-        print "\nHandling Movie " + str(i) + "/" + str(len(movies))
+        print "\nHandling Movie {}/{}".format(i, len(movies))
 
-        j = 0
-        for result in search_result:
-            j += 1
-            print "Result " + str(j) + "/" + str(len(search_result))
+        for j, result in enumerate(search_result, 1):
+            print "Result {}/{}".format(j, len(search_result))
 
             try:
-                new_file_name = result['title'] + " ("+ str(result['year']) + ")." + movie['extension']
+                new_file_name = movie_file_format.format(title=result['title'],
+                                                         year=result['year'],
+                                                         ext=movie['extension'])
             except KeyError:
-                print "Error caught in: " + str(result)
+                print "Error caught in: {}".format(result)
                 raise
 
             if not passed_args['--auto']:
-                print "Rename '" +  movie['filename'].decode('utf-8') + "' to '" + new_file_name + "'?"
+                print "Rename '{}' to '{}'?".format(movie['filename'].decode('utf-8'),
+                                                    new_file_name)
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
                     if not passed_args['--test']:
-                        os.rename(folder + "/" + movie['filename'], folder + "/" + new_file_name)
+                        os.rename(os.path.join(folder, movie['filename']),
+                                  os.path.join(folder, new_file_name))
                     break
                 elif decision.lower() == 's':
                     # Skip Movie
                     print "Skipped"
                     break
             else:
-                print "Renaming '" + movie['filename'].decode('utf-8') + "' to '" + new_file_name + "'"
                 if not passed_args['--test']:
-                    os.rename(folder + "/" + movie['filename'], folder + "/" + new_file_name)
+                    os.rename(os.path.join(folder, movie['filename']),
+                              os.path.join(folder, new_file_name))
                 break
 
 
 def rename_folders(folders):
-    print "Found " + str(len(folders)) + " Folders"
+    movie_folder_format = "{title} ({year})"
+    print "Found {} Folders".format(len(folders))
 
-    i = 0
-    for movie_folder in folders:
-        i += 1
+    for i, movie_folder in enumerate(folders, 1):
 
-        print "\nHandling Folder " + str(i) + "/" + str(len(folders))
+        print "\nHandling Folder {}/{}".format(i, len(folders))
 
         search_result = search_by_title(movie_folder)
 
-        j = 0
-        for result in search_result:
-            j += 1
+        for j, result in enumerate(search_result, 1):
 
-            print "Result " + str(j) + "/" + str(len(search_result))
+            print "Result {}/{}".format(i, len(search_result))
 
             try:
-                new_folder_name = result['title'] + " (" + str(result['year']) + ")"
+                new_folder_name = movie_folder_format.format(title=result['title'],
+                                                             year=result['year'])
             except KeyError:
-                print "Error caught in: " + str(result)
+                print "Error caught in: {}".format(result)
                 raise
 
             if not passed_args['--auto']:
-                print "Rename '" +  movie_folder.decode('utf-8') + "' to '" + new_folder_name + "'?"
+                print "Rename '{}' to '{}'?".format(movie_folder.decode('utf-8'),
+                                                    new_folder_name)
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
                     if not passed_args['--test']:
-                        os.rename(os.path.join(folder, movie_folder), os.path.join(folder, new_folder_name))
+                        os.rename(os.path.join(folder, movie_folder),
+                                  os.path.join(folder, new_folder_name))
                     break
                 elif decision.lower() == 's':
                     # Skip Movie
                     print "Skipped"
                     break
             else:
-                print "Renaming '" + movie_folder.decode('utf-8') + "' to '" + new_folder_name + "'"
+                print "Renaming '{}' to '{}'".format(movie_folder,
+                                                     new_folder_name)
                 if not passed_args['--test']:
-                    os.rename(os.path.join(folder, movie_folder), os.path.join(folder, new_folder_name))
+                    os.rename(os.path.join(folder, movie_folder),
+                              os.path.join(folder, new_folder_name))
                 break
 
 
