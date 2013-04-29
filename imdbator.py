@@ -33,11 +33,11 @@ def collec_movies_from_folder():
 
     for dir_entry in os.listdir(folder):
         if os.path.isdir(os.path.join(folder, dir_entry)):
-            movies['folders'].append(dir_entry)
             # Directory
+            movies['folders'].append(dir_entry)
         elif dir_entry.endswith(movie_extensions):
             # File
-            title = dir_entry.split('.')[0].decode('utf-8')
+            title = dir_entry.split('.')[0]
             extension = dir_entry.split('.')[1]
             movies['files'].append({
                 'filename': dir_entry,
@@ -66,16 +66,18 @@ def rename_files(movies):
             print "Result {}/{}".format(j, len(search_result))
 
             try:
-                new_file_name = movie_file_format.format(title=result['title'],
-                                                         year=result['year'],
-                                                         ext=movie['extension'])
+                new_file_name = movie_file_format.format(
+                    title=result['title'].encode('utf-8'),
+                    year=result['year'],
+                    ext=movie['extension'])
             except KeyError:
                 print "Error caught in: {}".format(result)
                 raise
 
             if not passed_args['--auto']:
-                print "Rename '{}' to '{}'?".format(movie['filename'].decode('utf-8'),
-                                                    new_file_name)
+                print "Rename '{}' to '{}'?".format(
+                    movie['filename'],
+                    new_file_name)
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
@@ -88,6 +90,9 @@ def rename_files(movies):
                     print "Skipped"
                     break
             else:
+                print "Renaming {} to {}".format(
+                    movie['filename'],
+                    new_file_name)
                 if not passed_args['--test']:
                     os.rename(os.path.join(folder, movie['filename']),
                               os.path.join(folder, new_file_name))
@@ -109,15 +114,17 @@ def rename_folders(folders):
             print "Result {}/{}".format(i, len(search_result))
 
             try:
-                new_folder_name = movie_folder_format.format(title=result['title'],
-                                                             year=result['year'])
+                new_folder_name = movie_folder_format.format(
+                    title=result['title'].encode('utf-8'),
+                    year=result['year'])
             except KeyError:
                 print "Error caught in: {}".format(result)
                 raise
 
             if not passed_args['--auto']:
-                print "Rename '{}' to '{}'?".format(movie_folder.decode('utf-8'),
-                                                    new_folder_name)
+                print "Rename '{}' to '{}'?".format(
+                    movie_folder,
+                    new_folder_name)
                 decision = raw_input("[y]es | [n]o | [s]kip: ")
 
                 if decision.lower() == 'y':
@@ -130,8 +137,9 @@ def rename_folders(folders):
                     print "Skipped"
                     break
             else:
-                print "Renaming '{}' to '{}'".format(movie_folder,
-                                                     new_folder_name)
+                print "Renaming '{}' to '{}'".format(
+                    movie_folder,
+                    new_folder_name)
                 if not passed_args['--test']:
                     os.rename(os.path.join(folder, movie_folder),
                               os.path.join(folder, new_folder_name))
