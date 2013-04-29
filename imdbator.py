@@ -19,6 +19,7 @@ Options:
 
 import os
 import sys
+import re
 from docopt import docopt
 from imdb import IMDb
 
@@ -54,13 +55,16 @@ def search_by_title(title):
 
 
 def get_title_from_result(result):
+    # replcae / in moviename
+    title = re.sub('\/', '-', result['title'].encode('utf-8'))
+
     try:
         return "{} ({})".format(
-            result['title'].encode('utf-8'),
+            title,
             result['year'])
     except KeyError:
         # print "Error caught in: {}".format(result)
-        return "{}".format(result['title'].encode('utf-8'))
+        return "{}".format(title)
 
 
 def get_new_title(title, current_title):
@@ -72,21 +76,25 @@ def get_new_title(title, current_title):
         return None
 
     for i, result in enumerate(imdb_results, 1):
-        print "{}: {}".format(i,
-                              get_title_from_result(result))
+        title = get_title_from_result(result)
 
-    selected_result = raw_input(
-        "Select Name from List (1 - {}), try a [n]ew Searchterm or [s]kip this file: ".format(
-        len(imdb_results)))
+        while True:
+            print "{}: {}".format(i, title)
 
-    if selected_result.lower() == 'n':
-        new_search_term = raw_input("Title: ")
-        return get_new_title(new_search_term, None)
-    elif selected_result.lower() == 's':
-        print "Skipped"
-        return None
-    elif int(selected_result) <= len(imdb_results):
-        return get_title_from_result(imdb_results[int(selected_result) - 1])
+            selected_result = raw_input(
+                "Select Name from List (1 - {}), try a [n]ew Searchterm or [s]kip this file: ".format(
+                len(imdb_results)))
+
+            if selected_result.lower() == 'n':
+                new_search_term = raw_input("Title: ")
+                return get_new_title(new_search_term, None)
+            elif selected_result.lower() == 's':
+                print "Skipped"
+                return None
+            elif selected_result.isdigit() and int(selected_result) <= len(imdb_results):
+                return get_title_from_result(imdb_results[int(selected_result) - 1])
+            else:
+                print "Unknown Selection: '{}'. Please try again.\n".format(selected_result)
 
 
 def rename_files(movies):
