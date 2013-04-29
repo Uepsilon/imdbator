@@ -53,97 +53,126 @@ def search_by_title(title):
     return imdbDB.search_movie(title)
 
 
-def rename_files(movies):
-    movie_file_format = "{title} ({year}).{ext}"
+def get_title_from_result(result):
+    try:
+        return "{} ({})".format(
+            result['title'].encode('utf-8'),
+            result['year'])
+    except KeyError:
+        # print "Error caught in: {}".format(result)
+        return "{}".format(result['title'].encode('utf-8'))
 
+
+def get_new_title(title, current_title):
+    imdb_results = search_by_title(title)
+
+    # Check if first hit matches current title
+    if passed_args['--auto'] and get_title_from_result(imdb_results[0]) == current_title:
+        print "'{}' matches best Hit\n".format(current_title)
+        return None
+
+    for i, result in enumerate(imdb_results, 1):
+        print "{}: {}".format(i,
+                              get_title_from_result(result))
+
+    selected_result = raw_input(
+        "Select Name from List (1 - {}), try a [n]ew Searchterm or [s]kip this file: ".format(
+        len(imdb_results)))
+
+    if selected_result.lower() == 'n':
+        new_search_term = raw_input("Title: ")
+        return get_new_title(new_search_term, None)
+    elif selected_result.lower() == 's':
+        print "Skipped"
+        return None
+    elif int(selected_result) <= len(imdb_results):
+        return get_title_from_result(imdb_results[int(selected_result) - 1])
+
+
+def rename_files(movies):
     print "Found {} Movies.".format(len(movies))
 
     for i, movie in enumerate(movies, 1):
-        search_result = search_by_title(movie['title'])
-        print "\nHandling Movie {}/{}".format(i, len(movies))
+        print "\nMovie {}/{}: {}".format(i, len(movies), movie['title'])
+        new_title = get_new_title(movie['title'], movie['title'])
 
-        for j, result in enumerate(search_result, 1):
-            print "Result {}/{}".format(j, len(search_result))
+        if new_title is not None:
+            new_file_name = new_title + "." + movie['extension']
 
-            try:
-                new_file_name = movie_file_format.format(
-                    title=result['title'].encode('utf-8'),
-                    year=result['year'],
-                    ext=movie['extension'])
-            except KeyError:
-                print "Error caught in: {}".format(result)
-                raise
+            print "Renaming '{}' to '{}'".format(
+                movie['filename'],
+                new_file_name)
 
-            if not passed_args['--auto']:
-                print "Rename '{}' to '{}'?".format(
-                    movie['filename'],
-                    new_file_name)
-                decision = raw_input("[y]es | [n]o | [s]kip: ")
-
-                if decision.lower() == 'y':
-                    if not passed_args['--test']:
-                        os.rename(os.path.join(folder, movie['filename']),
-                                  os.path.join(folder, new_file_name))
-                    break
-                elif decision.lower() == 's':
-                    # Skip Movie
-                    print "Skipped"
-                    break
-            else:
-                print "Renaming {} to {}".format(
-                    movie['filename'],
-                    new_file_name)
-                if not passed_args['--test']:
-                    os.rename(os.path.join(folder, movie['filename']),
-                              os.path.join(folder, new_file_name))
-                break
+            if not passed_args['--test']:
+                os.rename(os.path.join(folder, movie['filename']),
+                          os.path.join(folder, new_file_name))
+    print "\n"
 
 
 def rename_folders(folders):
-    movie_folder_format = "{title} ({year})"
-    print "Found {} Folders".format(len(folders))
+    print "Found {} Folders.".format(len(folders))
 
     for i, movie_folder in enumerate(folders, 1):
+        print "\nFolder {}/{}: {}".format(i, len(folders), movie_folder)
+        new_title = get_new_title(movie_folder, movie_folder)
 
-        print "\nHandling Folder {}/{}".format(i, len(folders))
+        if new_title is not None:
+            new_folder_name = new_title
 
-        search_result = search_by_title(movie_folder)
+            print "Renaming '{}' to '{}'".format(
+                movie_folder,
+                new_folder_name)
 
-        for j, result in enumerate(search_result, 1):
+            if not passed_args['--test']:
+                os.rename(os.path.join(folder, movie_folder),
+                          os.path.join(folder, new_folder_name))
+    print "\n"
 
-            print "Result {}/{}".format(i, len(search_result))
 
-            try:
-                new_folder_name = movie_folder_format.format(
-                    title=result['title'].encode('utf-8'),
-                    year=result['year'])
-            except KeyError:
-                print "Error caught in: {}".format(result)
-                raise
+    # movie_folder_format = "{title} ({year})"
+    # print "Found {} Folders".format(len(folders))
 
-            if not passed_args['--auto']:
-                print "Rename '{}' to '{}'?".format(
-                    movie_folder,
-                    new_folder_name)
-                decision = raw_input("[y]es | [n]o | [s]kip: ")
+    # for i, movie_folder in enumerate(folders, 1):
 
-                if decision.lower() == 'y':
-                    if not passed_args['--test']:
-                        os.rename(os.path.join(folder, movie_folder),
-                                  os.path.join(folder, new_folder_name))
-                    break
-                elif decision.lower() == 's':
-                    # Skip Movie
-                    print "Skipped"
-                    break
-            else:
-                print "Renaming '{}' to '{}'".format(
-                    movie_folder,
-                    new_folder_name)
-                if not passed_args['--test']:
-                    os.rename(os.path.join(folder, movie_folder),
-                              os.path.join(folder, new_folder_name))
-                break
+    #     print "\nHandling Folder {}/{}".format(i, len(folders))
+
+    #     search_result = search_by_title(movie_folder)
+
+    #     for j, result in enumerate(search_result, 1):
+
+    #         print "Result {}/{}".format(i, len(search_result))
+
+    #         try:
+    #             new_folder_name = movie_folder_format.format(
+    #                 title=result['title'].encode('utf-8'),
+    #                 year=result['year'])
+    #         except KeyError:
+    #             print "Error caught in: {}".format(result)
+    #             raise
+
+    #         if not passed_args['--auto']:
+    #             print "Rename '{}' to '{}'?".format(
+    #                 movie_folder,
+    #                 new_folder_name)
+    #             decision = raw_input("[y]es | [n]o | [s]kip: ")
+
+    #             if decision.lower() == 'y':
+    #                 if not passed_args['--test']:
+    #                     os.rename(os.path.join(folder, movie_folder),
+    #                               os.path.join(folder, new_folder_name))
+    #                 break
+    #             elif decision.lower() == 's':
+    #                 # Skip Movie
+    #                 print "Skipped"
+    #                 break
+    #         else:
+    #             print "Renaming '{}' to '{}'".format(
+    #                 movie_folder,
+    #                 new_folder_name)
+    #             if not passed_args['--test']:
+    #                 os.rename(os.path.join(folder, movie_folder),
+    #                           os.path.join(folder, new_folder_name))
+    #             break
 
 
 def main(args):
