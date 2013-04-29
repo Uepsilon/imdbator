@@ -75,26 +75,24 @@ def get_new_title(title, current_title):
         print "'{}' matches best Hit\n".format(current_title)
         return None
 
-    for i, result in enumerate(imdb_results, 1):
-        title = get_title_from_result(result)
+    while True:
+        for i, result in enumerate(imdb_results, 1):
+            print "{}: {}".format(i, get_title_from_result(result))
 
-        while True:
-            print "{}: {}".format(i, title)
+        selected_result = raw_input(
+            "Select Name from List (1 - {}), try a [n]ew Searchterm or [s]kip this file: ".format(
+            len(imdb_results)))
 
-            selected_result = raw_input(
-                "Select Name from List (1 - {}), try a [n]ew Searchterm or [s]kip this file: ".format(
-                len(imdb_results)))
-
-            if selected_result.lower() == 'n':
-                new_search_term = raw_input("Title: ")
-                return get_new_title(new_search_term, None)
-            elif selected_result.lower() == 's':
-                print "Skipped"
-                return None
-            elif selected_result.isdigit() and int(selected_result) <= len(imdb_results):
-                return get_title_from_result(imdb_results[int(selected_result) - 1])
-            else:
-                print "Unknown Selection: '{}'. Please try again.\n".format(selected_result)
+        if selected_result.lower() == 'n':
+            new_search_term = raw_input("Title: ")
+            return get_new_title(new_search_term, None)
+        elif selected_result.lower() == 's':
+            print "Skipped"
+            return None
+        elif selected_result.isdigit() and int(selected_result) <= len(imdb_results):
+            return get_title_from_result(imdb_results[int(selected_result) - 1])
+        else:
+            print "Unknown Selection: '{}'. Please try again.\n".format(selected_result)
 
 
 def rename_files(movies):
