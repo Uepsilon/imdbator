@@ -97,9 +97,13 @@ def get_new_title(title, current_title):
                 i += 1
                 print "{}: {}".format(i, title)
 
-        selected_result = raw_input(
-            "Select Name from List (1 - {}), try a [n]ew Searchterm or [s]kip this file: ".format(
-            len(imdb_results)))
+        if i > 0:
+            selected_result = raw_input(
+                "Select Name from List (1 - {}), try a [n]ew Searchterm or [s]kip this file: ".format(
+                i))
+        else:
+            selected_result = raw_input(
+                "Nothing found. Try a [n]ew Searchterm or [s]kip this file: ")
 
         if selected_result.lower() == 'n':
             new_search_term = raw_input("Title: ")
