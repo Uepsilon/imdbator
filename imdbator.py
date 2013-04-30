@@ -39,8 +39,7 @@ def collec_movies_from_folder():
             movies['folders'].append(dir_entry)
         elif dir_entry.endswith(movie_extensions):
             # File
-            title = dir_entry.split('.')[0]
-            extension = dir_entry.split('.')[1]
+            title, extension = dir_entry.rsplit('.', 1)
             movies['files'].append({
                 'filename': dir_entry,
                 'title': title,
@@ -83,7 +82,7 @@ def get_new_title(title, current_title):
     imdb_results = search_by_title(title)
 
     # Check if first hit matches current title
-    if passed_args['--auto'] and get_title_from_result(imdb_results[0]) == current_title:
+    if passed_args['--auto'] and current_title is not None and get_title_from_result(imdb_results[0]) == current_title:
         print "'{}' matches best Hit\n".format(current_title)
         return None
 
