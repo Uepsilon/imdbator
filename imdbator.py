@@ -80,6 +80,7 @@ def get_title_from_result(result):
 
 def get_new_title(title, current_title):
     imdb_results = search_by_title(title)
+    titles = []  # List of all Titles found by IMDBPy
 
     # Check if first hit matches current title
     if passed_args['--auto'] and current_title is not None and get_title_from_result(imdb_results[0]) == current_title:
@@ -87,19 +88,19 @@ def get_new_title(title, current_title):
         return None
 
     while True:
-        i = 0
         for result in imdb_results:
             title = get_title_from_result(result)
-
             # Handling of skipped Results
             if title is not None:
-                i += 1
-                print "{}: {}".format(i, title)
+                titles.append(title)
 
-        if i > 0:
+        for i, title in enumerate(titles, 1):
+            print "{}: {}".format(i, title)
+
+        if len(titles) > 0:
             selected_result = raw_input(
                 "Select Name from List (1 - {}), try a [n]ew Searchterm or [s]kip this file: ".format(
-                i))
+                len(titles)))
         else:
             selected_result = raw_input(
                 "Nothing found. Try a [n]ew Searchterm or [s]kip this file: ")
@@ -110,8 +111,8 @@ def get_new_title(title, current_title):
         elif selected_result.lower() == 's':
             print "Skipped"
             return None
-        elif selected_result.isdigit() and int(selected_result) <= len(imdb_results):
-            return get_title_from_result(imdb_results[int(selected_result) - 1])
+        elif selected_result.isdigit() and int(selected_result) <= len(titles):
+            return titles[int(selected_result) - 1]
         else:
             print "Unknown Selection: '{}'. Please try again.\n".format(selected_result)
 
