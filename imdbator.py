@@ -56,19 +56,27 @@ def search_by_title(title):
 
 
 def get_title_from_result(result):
-    # replace / in moviename
-    if passed_args['--canonical']:
-        return re.sub('\/', '-', result['long imdb canonical title'].encode('utf-8'))
-    else:
-        title = re.sub('\/', '-', result['title'].encode('utf-8'))
+    title = None
 
-        try:
-            return "{} ({})".format(
-                title,
-                result['year'])
-        except KeyError:
-            # print "Error caught in: {}".format(result)
-            return "{}".format(title)
+    # If Result is not a movie, skip it
+    if result['kind'] == 'movie':
+        # replace / in moviename
+        if passed_args['--canonical']:
+            title = re.sub('\/', '-', result['long imdb canonical title'].encode('utf-8'))
+            title = title.replace(' (I)', '')  # Fix for Strange IMDB-Titles
+        else:
+            title = re.sub('\/', '-', result['title'].encode('utf-8'))
+            title = title.replace(' (I)', '')  # Fix for Strange IMDB-Titles
+
+            try:
+                title = "{} ({})".format(
+                    title,
+                    result['year'])
+            except KeyError:
+                # print "Error caught in: {}".format(result)
+                title = "{}".format(title)
+
+    return title
 
 
 def get_new_title(title, current_title):
@@ -80,8 +88,14 @@ def get_new_title(title, current_title):
         return None
 
     while True:
-        for i, result in enumerate(imdb_results, 1):
-            print "{}: {}".format(i, get_title_from_result(result))
+        i = 0
+        for result in imdb_results:
+            title = get_title_from_result(result)
+
+            # Handling of skipped Results
+            if title is not None:
+                i += 1
+                print "{}: {}".format(i, title)
 
         selected_result = raw_input(
             "Select Name from List (1 - {}), try a [n]ew Searchterm or [s]kip this file: ".format(
