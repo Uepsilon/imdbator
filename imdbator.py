@@ -49,7 +49,7 @@ def collec_movies_from_folder():
     return movies
 
 
-def search_by_title(title):
+def search_imdb_by_title(title):
     imdbDB = IMDb('http')
     return imdbDB.search_movie(title)
 
@@ -79,16 +79,16 @@ def get_title_from_result(result):
 
 
 def get_new_title(title, current_title):
-    imdb_results = search_by_title(title)
+    imdb_resultsb = search_imdb_by_title(title)
     titles = []  # List of all Titles found by IMDBPy
 
     # Check if first hit matches current title
-    if passed_args['--auto'] and current_title is not None and get_title_from_result(imdb_results[0]) == current_title:
+    if passed_args['--auto'] and current_title is not None and get_title_from_result(imdb_resultsb[0]) == current_title:
         print "'{}' matches best Hit\n".format(current_title)
         return None
 
     while True:
-        for result in imdb_results:
+        for result in imdb_resultsb:
             title = get_title_from_result(result)
             # Handling of skipped Results
             if title is not None:
@@ -155,52 +155,6 @@ def rename_folders(folders):
                 os.rename(os.path.join(folder, movie_folder),
                           os.path.join(folder, new_folder_name))
     print "\n"
-
-
-    # movie_folder_format = "{title} ({year})"
-    # print "Found {} Folders".format(len(folders))
-
-    # for i, movie_folder in enumerate(folders, 1):
-
-    #     print "\nHandling Folder {}/{}".format(i, len(folders))
-
-    #     search_result = search_by_title(movie_folder)
-
-    #     for j, result in enumerate(search_result, 1):
-
-    #         print "Result {}/{}".format(i, len(search_result))
-
-    #         try:
-    #             new_folder_name = movie_folder_format.format(
-    #                 title=result['title'].encode('utf-8'),
-    #                 year=result['year'])
-    #         except KeyError:
-    #             print "Error caught in: {}".format(result)
-    #             raise
-
-    #         if not passed_args['--auto']:
-    #             print "Rename '{}' to '{}'?".format(
-    #                 movie_folder,
-    #                 new_folder_name)
-    #             decision = raw_input("[y]es | [n]o | [s]kip: ")
-
-    #             if decision.lower() == 'y':
-    #                 if not passed_args['--test']:
-    #                     os.rename(os.path.join(folder, movie_folder),
-    #                               os.path.join(folder, new_folder_name))
-    #                 break
-    #             elif decision.lower() == 's':
-    #                 # Skip Movie
-    #                 print "Skipped"
-    #                 break
-    #         else:
-    #             print "Renaming '{}' to '{}'".format(
-    #                 movie_folder,
-    #                 new_folder_name)
-    #             if not passed_args['--test']:
-    #                 os.rename(os.path.join(folder, movie_folder),
-    #                           os.path.join(folder, new_folder_name))
-    #             break
 
 
 def main(args):
